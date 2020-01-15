@@ -17,6 +17,22 @@ router
     } catch (error) {
       response.error(req, res, error, 500);
     }
+  })
+  .post(async (req, res) => {
+    try {
+      const newUser = await Controller.userUpsert(req.body);
+      response.success(req, res, newUser, 201);
+    } catch (error) {
+      response.error(req, res, error, 500);
+    }
+  })
+  .put(async (req, res) => {
+    try {
+      const updatedUser = await Controller.userUpsert(req.body);
+      response.success(req, res, updatedUser, 201);
+    } catch (error) {
+      response.error(req, res, error, 500);
+    }
   });
 
 router

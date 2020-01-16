@@ -1,6 +1,8 @@
 const nanoid = require('nanoid');
 let store = require('../../../store/dummy');
 
+const auth = require('../auth');
+
 const TABLE = 'user';
 
 module.exports = (injectedStore) => {
@@ -12,16 +14,24 @@ module.exports = (injectedStore) => {
 
   const getUserByID = (id) => store.get(TABLE, id);
 
-  const userUpsert = (body) => {
+  const userUpsert = async (body) => {
     const user = {
-      id: null,
       name: body.name,
+      username: body.username,
     };
 
     if (body.id) {
       user.id = body.id;
     } else {
       user.id = nanoid();
+    }
+
+    if (body.password || body.username) {
+      await auth.upsert({
+        id: user.id,
+        username: user.username,
+        password: body.password,
+      });
     }
 
     return store.upsert(TABLE, user);

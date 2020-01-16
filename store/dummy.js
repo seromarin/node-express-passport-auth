@@ -11,12 +11,23 @@ const list = async (table) => db[table];
 
 const get = async (table, id) => {
   const collection = await list(table);
-  const user = collection.filter((item) => item.id === Number(id))[0] || null;
-  return user;
+  return collection.filter((item) => item.id === Number(id))[0] || null;
 };
 
 const upsert = async (table, data) => {
-  db[collection].push(data);
+  if (!db[table]) {
+    db[table] = [];
+  }
+  db[table].push(data);
+
+  console.log(db);
+};
+
+const query = async (table, qr) => {
+  const collection = await list(table);
+  const keys = Object.keys(qr);
+  const key = keys[0];
+  return collection.filter((item) => item[key] === qr[key])[0] || null;
 };
 
 const remove = async (table, id) => true;
@@ -27,4 +38,5 @@ module.exports = {
   get,
   upsert,
   remove,
+  query,
 };

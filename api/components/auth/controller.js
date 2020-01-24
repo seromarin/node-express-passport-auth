@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 let store = require('../../../store/dummy');
 const jwtAuth = require('../../../auth');
 
@@ -11,7 +13,9 @@ module.exports = (injectedStore) => {
   async function login(username, password) {
     let token;
     const data = await store.query(TABLE, { username });
-    if (data.password === password) {
+
+    const validationPassword = await bcrypt.compare(password, data.password);
+    if (validationPassword) {
       // Generate token
       token = jwtAuth.sign(data);
     } else {
@@ -20,7 +24,7 @@ module.exports = (injectedStore) => {
     return token;
   }
 
-  function upsert(data) {
+  async function upsert(data) {
     const authData = {
       id: data.id,
     };
@@ -30,7 +34,8 @@ module.exports = (injectedStore) => {
     }
 
     if (data.password) {
-      authData.password = data.password;
+      // authData.password = data.password;
+      authData.password = await bcrypt.hash(data.password, 5);
     }
 
     return store.upsert(TABLE, authData);

@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 
 // Components
 const user = require('./components/user/network');
+const auth = require('./components/auth/network');
 
 // Router
 const router = express.Router();
@@ -24,6 +25,7 @@ const swaggerDoc = require('./swagger.json');
 router.get('/', (req, res) => res.json({ hello: 'World' }));
 router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 router.use('/api/user', user);
+router.use('/api/auth', auth);
 
 app.use(router);
 

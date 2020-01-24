@@ -7,7 +7,7 @@ const db = {
   ],
 };
 
-const list = async (table) => db[table];
+const list = async (table) => db[table] || [];
 
 const get = async (table, id) => {
   const collection = await list(table);
@@ -19,8 +19,6 @@ const upsert = async (table, data) => {
     db[table] = [];
   }
   db[table].push(data);
-
-  console.log(db);
 };
 
 const query = async (table, qr) => {

@@ -1,4 +1,5 @@
 let store = require('../../../store/dummy');
+const jwtAuth = require('../../../auth');
 
 const TABLE = 'auth';
 
@@ -8,8 +9,15 @@ module.exports = (injectedStore) => {
   }
 
   async function login(username, password) {
-    const data = await store.query(TABLE, { username })
-
+    let token;
+    const data = await store.query(TABLE, { username });
+    if (data.password === password) {
+      // Generate token
+      token = jwtAuth.sign(data);
+    } else {
+      throw new Error('Información invalida');
+    }
+    return token;
   }
 
   function upsert(data) {
